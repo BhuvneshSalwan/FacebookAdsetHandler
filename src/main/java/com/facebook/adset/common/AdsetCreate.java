@@ -34,7 +34,7 @@ public class AdsetCreate {
 		
 		try{
 			
-			String adset_name, account_id, campaign_id, daily_budget, status, age_min, age_max, genders, cities, countries, audiences, pixel_id, parse_client_id;
+			String adset_name, account_id, campaign_id, daily_budget, status, age_min, age_max, genders, cities, countries, audiences, pixel_id, parse_client_id, optimization_event, publisher_platforms, device_platforms, optimization_goal, targeting_optimization;
 			
 			try{ adset_name = (String) row.getF().get(0).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for Adset Name i.e. " + row.getF().get(0).getV() + "."); return false;}
 			try{ account_id = (String) row.getF().get(1).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for Account_ID i.e. " + row.getF().get(1).getV() + "."); return false;}
@@ -49,6 +49,11 @@ public class AdsetCreate {
 			try{ audiences = (String) row.getF().get(10).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for audiences i.e. " + row.getF().get(10).getV() + "."); audiences = "null";}
 			try{ pixel_id = (String) row.getF().get(11).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for pixel_id i.e. " + row.getF().get(11).getV() + "."); pixel_id = "null";}
 			try{ parse_client_id = (String) row.getF().get(12).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for parse_client_id i.e. " + row.getF().get(12).getV() + "."); parse_client_id = "null";}
+			try{ optimization_event = (String) row.getF().get(15).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for optimization_event i.e. " + row.getF().get(15).getV() + "."); optimization_event = "null";}
+			try{ publisher_platforms = (String) row.getF().get(16).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for publisher_platforms i.e. " + row.getF().get(16).getV() + "."); publisher_platforms = "null";}
+			try{ device_platforms = (String) row.getF().get(17).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for device_platforms i.e. " + row.getF().get(17).getV() + "."); device_platforms = "null";}
+			try{ optimization_goal = (String) row.getF().get(18).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for optimization_goal i.e. " + row.getF().get(18).getV() + "."); optimization_goal = "null";}
+			try{ targeting_optimization = (String) row.getF().get(19).getV(); }catch(Exception e){ System.out.println("Exception while processing the value for targeting_optimization i.e. " + row.getF().get(19).getV() + "."); targeting_optimization = "null";}
 			
 	    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
@@ -168,16 +173,22 @@ public class AdsetCreate {
 				
 			}
 
+			targeting.put("targeting_optimization", targeting_optimization);
+			targeting.put("publisher_platforms", new JSONArray(publisher_platforms));
+			targeting.put("device_platforms", device_platforms);
+			
           	parameters.add(new BasicNameValuePair("billing_event","IMPRESSIONS"));
           	parameters.add(new BasicNameValuePair("name", adset_name));
-          	parameters.add(new BasicNameValuePair("promoted_object","{\"pixel_id\":" + pixel_id + ",\"custom_event_type\":\"PURCHASE\"}"));
-          	parameters.add(new BasicNameValuePair("optimization_goal", "OFFSITE_CONVERSIONS"));
+          //	parameters.add(new BasicNameValuePair("promoted_object","{\"pixel_id\":" + pixel_id + ",\"custom_event_type\":\"PURCHASE\"}"));
+          //	parameters.add(new BasicNameValuePair("optimization_goal", "OFFSITE_CONVERSIONS"));
+          	parameters.add(new BasicNameValuePair("promoted_object","{\"pixel_id\":" + pixel_id + ",\"custom_event_type\":\"" + optimization_event + "\"}"));
+          	parameters.add(new BasicNameValuePair("optimization_goal", optimization_goal));
           	parameters.add(new BasicNameValuePair("campaign_id", campaign_id));
             parameters.add(new BasicNameValuePair("targeting", targeting.toString()));
             
             String startDate = null;
             
-            startDate = dateFormat.format(new Date(System.currentTimeMillis()));
+            startDate = dateFormat.format(new Date(System.currentTimeMillis() - 18000000));
             startDate = startDate.replace(' ', 'T');
 
             parameters.add(new BasicNameValuePair("start_time",startDate));
